@@ -41,8 +41,8 @@ class slider {
                 }   
             }  
         }
-        let totalStckRnd = Math.round(this.totalSlidesNumber.length / this.numberOfSlideToShow);
-        let totalStckntRnd = this.totalSlidesNumber.length / this.numberOfSlideToShow;
+        let totalStckRnd = Math.round(this.totalSlidesNumber.length / this.slidingCount);
+        let totalStckntRnd = this.totalSlidesNumber.length / this.slidingCount;
         this.totalStack = totalStckRnd;
         if(totalStckntRnd > totalStckRnd){
             this.totalStack = totalStckRnd + 1;
@@ -52,10 +52,16 @@ class slider {
             let diff = (sliderMotionWidth) - slideWidth * this.slidingCount;
             if(h > 0){
                 this.stackWidth.push( (sliderMotionWidth - diff) * h);
+                this.addBullets();
             }
         }
         eventsCallback;
     } 
+    addBullets(){
+        let dots = document.createElement("span");
+        dots.setAttribute("class", "slides-dots");
+        this.container.appendChild(dots);
+    }
     addStyle(){
        //add width of slide content
        

@@ -57,3 +57,7 @@
     transform: rotate(-135deg);
     left:-10px
  }
+ .slides-dots{
+    padding: 2px;
+    color:#000
+ }
