@@ -2,13 +2,14 @@ class slider {
 
     constructor(objct){
         this.container = document.getElementById(objct.id);
-        this.slideNumber = objct.slidesNumber ? objct.slidesNumber : 3;
+        this.numberOfSlideToShow = objct.numberOfSlideToShow ? objct.numberOfSlideToShow : 1;
         this.totalSlidesNumber = [];
-        this.currentIndex = 1;
+        this.totalStack = 0;
+        this.currentIndex = 0;
         this.margin = objct.margin ? objct.margin : 2;
-        this.slideWidth = ( 100 / this.slideNumber ) - this.margin * 2;
-        this.slidingCount = objct.slidingCount ? objct.slidingCount : this.slideNumber;
-        this.stackWidth = 0;
+        this.slideWidth = ( 100 / this.numberOfSlideToShow ) - this.margin * 2;
+        this.slidingCount = objct.slidingCount ? objct.slidingCount : this.numberOfSlideToShow;
+        this.stackWidth = [0];
 
         console.log("this.slidingCount"+this.slidingCount);
 
@@ -19,10 +20,11 @@ class slider {
         
         this.addStyle(); 
         this.appendArrows();
-        this.addEvents();
-        this.calculateSlides();
+        this.calculateSlides(
+            this.addEvents()
+        );
     }
-    calculateSlides(){
+    calculateSlides(eventsCallback){
         let sliderMotionWidth, slideWidth, calculateMargin;
         for (let i = 0; i < this.container.childNodes.length; i++) {
             if(this.container.childNodes[i].classList != undefined ){
@@ -39,9 +41,20 @@ class slider {
                 }   
             }  
         }
-        let diff = (sliderMotionWidth) - slideWidth * this.slidingCount;
-        this.stackWidth = sliderMotionWidth - diff;
-
+        let totalStckRnd = Math.round(this.totalSlidesNumber.length / this.numberOfSlideToShow);
+        let totalStckntRnd = this.totalSlidesNumber.length / this.numberOfSlideToShow;
+        this.totalStack = totalStckRnd;
+        if(totalStckntRnd > totalStckRnd){
+            this.totalStack = totalStckRnd + 1;
+        } 
+        console.log("this.totalStack",this.totalStack);
+        for(let h=0; h< this.totalStack; h++){
+            let diff = (sliderMotionWidth) - slideWidth * this.slidingCount;
+            if(h > 0){
+                this.stackWidth.push( (sliderMotionWidth - diff) * h);
+            }
+        }
+        eventsCallback;
     } 
     addStyle(){
        //add width of slide content
@@ -53,18 +66,26 @@ class slider {
     }
     addEvents(){
         this.arrowsLeft.addEventListener("click", ()=>{
-            this.slideNext();
+            this.slidePrev();
         });
         this.arrowsRight.addEventListener("click", ()=>{
-            this.slidePrev();
+            this.slideNext();
         });
     }
     slideNext(){
-       console.log(this.stackWidth)
-       document.getElementById("slide-path").style.transform = 'translateX(-'+this.stackWidth+'px)';
+        if(this.stackWidth[this.currentIndex] != undefined && this.currentIndex < this.stackWidth.length-1){
+            this.currentIndex ++;
+            console.log("next",this.stackWidth[this.currentIndex])
+            console.log(this.stackWidth)
+            document.getElementById("slide-path").style.transform = 'translateX(-'+this.stackWidth[this.currentIndex]+'px)';
+        }
     }
     slidePrev(){
-        console.log(this.stackWidth)
-        document.getElementById("slide-path").style.transform = 'translateX('+this.stackWidth+'px)';
+        if( this.stackWidth[this.currentIndex] != undefined && this.currentIndex > 0 ){
+            this.currentIndex --;
+            console.log("prev",this.stackWidth[this.currentIndex]);
+            console.log(this.stackWidth);
+            document.getElementById("slide-path").style.transform = 'translateX(-'+this.stackWidth[this.currentIndex]+'px)';
+        }
      }
 }
